@@ -27,7 +27,16 @@ jobs:
         env:
           SOURCE_URL_MTL: ${{ secrets.SOURCE_URL_MTL }}
           SOURCE_URL_LGL: ${{ secrets.SOURCE_URL_LGL }}
+          RAW_DIR: raw
         run: python scripts/build_ics.py
+
+      - name: Garder les fichiers Excel (diagnostic, 1 jour)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: excel
+          path: raw/
+          retention-days: 1
 
       - name: Publier si changement
         if: always()

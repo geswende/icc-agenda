@@ -310,6 +310,9 @@ def main():
         try:
             data = (Path(value).read_bytes() if prefix == "LOCAL_FILE_"
                     else download(value))
+            if os.environ.get("RAW_DIR"):  # copie brute pour diagnostic
+                Path(os.environ["RAW_DIR"]).mkdir(exist_ok=True)
+                (Path(os.environ["RAW_DIR"]) / f"{code}.xlsx").write_bytes(data)
             wb = openpyxl.load_workbook(io.BytesIO(data), data_only=True)
             events = extract_events(wb)
         except BaseException as exc:  # une source en panne n'arrête pas l'autre
