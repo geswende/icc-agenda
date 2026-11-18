@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: "0 9 * * *"   # tous les jours vers 4 h (heure du Québec)
   workflow_dispatch:       # bouton "Run workflow" pour lancer à la main
+  push:                    # relance quand le script change
+    branches: [main]
+    paths: ["scripts/**", ".github/workflows/**"]
 
 permissions:
   contents: write
