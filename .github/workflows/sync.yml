@@ -30,13 +30,9 @@ jobs:
           RAW_DIR: raw
         run: python scripts/build_ics.py
 
-      - name: Garder les fichiers Excel (diagnostic, 1 jour)
+      - name: Diagnostic (structure des fichiers)
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: excel
-          path: raw/
-          retention-days: 1
+        run: python scripts/inspect_xlsx.py raw/*.xlsx || true
 
       - name: Publier si changement
         if: always()
