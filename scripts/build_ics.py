@@ -249,25 +249,64 @@ def to_ics(events):
     return "\r\n".join(fold(x) for x in L) + "\r\n"
 
 
-def main():
-    local = os.environ.get("LOCAL_FILE")
-    if local:
-        data = Path(local).read_bytes()
-    else:
-        url = os.environ.get("SOURCE_URL")
-        if not url:
-            sys.exit("SOURCE_URL manquant (secret GitHub).")
-        data = download(url)
-    wb = openpyxl.load_workbook(io.BytesIO(data), data_only=True)
-    events = extract_events(wb)
-    if not events:
-        sys.exit("Aucun événement trouvé : remplissez scripts/config.json.")
-    OUT.mkdir(exist_ok=True)
-    (OUT / "icc.ics").write_text(to_ics(events), encoding="utf-8", newline="")
-    (OUT / "icc.json").write_text(json.dumps(
-        {"updated": dt.datetime.now(dt.timezone.utc).isoformat(),
+NAMES = {"MTL": "Montréal", "LGL": "Longueuil"}
+
+
+def sources():
+    """Chaque variable SOURCE_URL_XXX (ou LOCAL_FILE_XXX pour tester)
+    devient une source nommée XXX."""
+    found = {}
+    for k, v in sorted(os.environ.items()):
+        for prefix in ("SOURCE_URL_", "LOCAL_FILE_"):
+            if k.startswith(prefix) and v.strip():
+                found[k[len(prefix):].upper()] = (prefix, v.strip())
+    if not found and os.environ.get("SOURCE_URL"):
+        found["ICC"] = ("SOURCE_URL_", os.environ["SOURCE_URL"])
+    return found
+
+
+def write(name, label, events):
+    global CAL_NAME
+    CAL_NAME = label
+    (OUT / f"{name}.ics").write_text(to_ics(events), encoding="utf-8", newline="")
+    (OUT / f"{name}.json").write_text(json.dumps(
+        {"name": label, "updated": dt.datetime.now(dt.timezone.utc).isoformat(),
          "events": events}, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"{len(events)} événements écrits dans docs/icc.ics et docs/icc.json")
+    print(f"  -> docs/{name}.ics ({len(events)} événements)")
+
+
+def main():
+    srcs = sources()
+    if not srcs:
+        sys.exit("Aucun secret SOURCE_URL_XXX trouvé.")
+    OUT.mkdir(exist_ok=True)
+    everything, errors = [], []
+    for code, (prefix, value) in srcs.items():
+        label = f"ICC {NAMES.get(code, code)}"
+        print(f"== {label}")
+        try:
+            data = (Path(value).read_bytes() if prefix == "LOCAL_FILE_"
+                    else download(value))
+            wb = openpyxl.load_workbook(io.BytesIO(data), data_only=True)
+            events = extract_events(wb)
+        except BaseException as exc:  # une source en panne n'arrête pas l'autre
+            errors.append(f"{label}: {exc}")
+            print(f"  ERREUR: {exc}")
+            continue
+        if not events:
+            errors.append(f"{label}: aucun événement (voir config.json)")
+            continue
+        for e in events:
+            e["source"] = code
+            e["uid"] = f"{code.lower()}-{e['uid']}"
+        write(f"icc-{code.lower()}", label, events)
+        for e in events:
+            everything.append({**e, "title": f"[{code}] {e['title']}"})
+    if everything:
+        everything.sort(key=lambda e: (e["date"], e["start"] or ""))
+        write("icc", "ICC (tous)", everything)
+    if errors:
+        sys.exit("Problèmes :\n" + "\n".join(errors))
 
 
 if __name__ == "__main__":

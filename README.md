@@ -3,7 +3,9 @@
 Chaque jour, GitHub télécharge le fichier Excel des événements ICC
 (lien SharePoint public) et publie un flux d'agenda :
 
-    https://VOTRE-NOM.github.io/icc-agenda/icc.ics
+    https://geswende.github.io/icc-agenda/icc-mtl.ics  (Montréal)
+    https://geswende.github.io/icc-agenda/icc-lgl.ics  (Longueuil)
+    https://geswende.github.io/icc-agenda/icc.ics      (les deux)
 
 ## Mise en place (tout dans le navigateur, aucune commande)
 
@@ -15,8 +17,8 @@ Chaque jour, GitHub télécharge le fichier Excel des événements ICC
      nom `.github/workflows/sync.yml`, coller le contenu.
 3. **Ajouter le lien Excel en secret** : *Settings → Secrets and variables
    → Actions → New repository secret*
-   - Name : `SOURCE_URL`
-   - Secret : le lien SharePoint
+   - Names : `SOURCE_URL_MTL` (Montréal) et `SOURCE_URL_LGL` (Longueuil)
+   - Secret : le lien SharePoint de chaque fichier
 4. **Activer Pages** : *Settings → Pages → Source : Deploy from a branch*
    → Branch `main`, dossier `/docs` → *Save*
 5. **Lancer une 1re fois** : onglet *Actions* → « Synchroniser agenda ICC »
