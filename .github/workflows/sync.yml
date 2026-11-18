@@ -27,12 +27,7 @@ jobs:
         env:
           SOURCE_URL_MTL: ${{ secrets.SOURCE_URL_MTL }}
           SOURCE_URL_LGL: ${{ secrets.SOURCE_URL_LGL }}
-          RAW_DIR: raw
         run: python scripts/build_ics.py
-
-      - name: Diagnostic (structure des fichiers)
-        if: always()
-        run: python scripts/inspect_xlsx.py raw/*.xlsx || true
 
       - name: Publier si changement
         if: always()

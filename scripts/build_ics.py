@@ -19,10 +19,14 @@ import os
 import re
 import sys
 import unicodedata
+from collections import Counter
 import urllib.request
 from pathlib import Path
 
 import openpyxl
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import parsers  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "docs"
@@ -273,6 +277,35 @@ def to_ics(events):
 
 
 NAMES = {"MTL": "Montréal", "LGL": "Longueuil"}
+# Quels agendas produire pour chaque église :
+#   "liste"  = onglet « Grands évènements »
+#   "grille" = onglets mensuels (toutes les activités)
+MODES = {
+    "MTL": {"": "liste", "-detail": "grille"},
+    "LGL": {"": "liste", "-detail": "grille"},
+}
+SUFFIX_LABEL = {"": "", "-detail": " (détaillé)"}
+
+
+def build(wb, mode):
+    if mode == "liste":
+        year = parsers.workbook_year(wb)
+        sheets = [ws for ws in wb.worksheets if parsers.is_list(ws)]
+        events = [e for ws in sheets for e in parsers.parse_list(ws, year)]
+    else:
+        sheets = [ws for ws in wb.worksheets if parsers.is_grid(ws)]
+        events = [e for ws in sheets for e in parsers.parse_grid(ws)]
+    print(f"  mode {mode}: {len(sheets)} onglet(s) -> {len(events)} événements")
+    if not events:  # dernier recours : tableau classique Date / Événement
+        events = extract_events(wb)
+    events.sort(key=lambda e: (e["date"], e["start"] or ""))
+    seen = Counter()
+    for e in events:  # identifiant stable -> pas de doublons dans l'agenda
+        key = f"{e['date']}|{e['start']}|{norm(e['title'])}"
+        seen[key] += 1
+        e["uid"] = (hashlib.sha1(f"{key}|{seen[key]}".encode()).hexdigest()[:16]
+                    + "@icc-agenda")
+    return events
 
 
 def sources():
@@ -283,8 +316,6 @@ def sources():
         for prefix in ("SOURCE_URL_", "LOCAL_FILE_"):
             if k.startswith(prefix) and v.strip():
                 found[k[len(prefix):].upper()] = (prefix, v.strip())
-    if not found and os.environ.get("SOURCE_URL"):
-        found["ICC"] = ("SOURCE_URL_", os.environ["SOURCE_URL"])
     return found
 
 
@@ -303,10 +334,10 @@ def main():
     if not srcs:
         sys.exit("Aucun secret SOURCE_URL_XXX trouvé.")
     OUT.mkdir(exist_ok=True)
-    everything, errors = [], []
+    combined, errors = [], []
     for code, (prefix, value) in srcs.items():
-        label = f"ICC {NAMES.get(code, code)}"
-        print(f"== {label}")
+        base = f"ICC {NAMES.get(code, code)}"
+        print(f"== {base}")
         try:
             data = (Path(value).read_bytes() if prefix == "LOCAL_FILE_"
                     else download(value))
@@ -314,23 +345,25 @@ def main():
                 Path(os.environ["RAW_DIR"]).mkdir(exist_ok=True)
                 (Path(os.environ["RAW_DIR"]) / f"{code}.xlsx").write_bytes(data)
             wb = openpyxl.load_workbook(io.BytesIO(data), data_only=True)
-            events = extract_events(wb)
-        except BaseException as exc:  # une source en panne n'arrête pas l'autre
-            errors.append(f"{label}: {exc}")
+        except Exception as exc:  # une source en panne n'arrête pas l'autre
+            errors.append(f"{base}: {exc}")
             print(f"  ERREUR: {exc}")
             continue
-        if not events:
-            errors.append(f"{label}: aucun événement (voir config.json)")
-            continue
-        for e in events:
-            e["source"] = code
-            e["uid"] = f"{code.lower()}-{e['uid']}"
-        write(f"icc-{code.lower()}", label, events)
-        for e in events:
-            everything.append({**e, "title": f"[{code}] {e['title']}"})
-    if everything:
-        everything.sort(key=lambda e: (e["date"], e["start"] or ""))
-        write("icc", "ICC (tous)", everything)
+        for suffix, mode in MODES.get(code, {"": "grille"}).items():
+            label = base + SUFFIX_LABEL.get(suffix, suffix)
+            events = build(wb, mode)
+            if not events:
+                errors.append(f"{label}: aucun événement")
+                continue
+            for e in events:
+                e["source"] = code
+                e["uid"] = f"{code.lower()}{suffix}-{e['uid']}"
+            write(f"icc-{code.lower()}{suffix}", label, events)
+            if suffix == "":
+                combined += [{**e, "title": f"[{code}] {e['title']}"} for e in events]
+    if combined:
+        combined.sort(key=lambda e: (e["date"], e["start"] or ""))
+        write("icc", "ICC (grands événements)", combined)
     if errors:
         sys.exit("Problèmes :\n" + "\n".join(errors))
 
