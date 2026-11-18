@@ -55,17 +55,40 @@ def norm(s):
 
 
 # ---------- Téléchargement ----------
+def candidate_urls(url):
+    """Plusieurs façons connues de télécharger un lien de partage SharePoint."""
+    base = url.split("?")[0]
+    yield f"{base}?download=1"
+    # https://hote/:x:/g/personal/USER/TOKEN -> download.aspx?share=TOKEN
+    m = re.match(r"(https://[^/]+)/:\w:/\w/(personal/[^/]+|sites/[^/]+)/([^/?]+)", base)
+    if m:
+        yield f"{m[1]}/{m[2]}/_layouts/15/download.aspx?share={m[3]}"
+    yield url
+
+
 def download(url):
-    sep = "&" if "?" in url else "?"
-    if "download=1" not in url:
-        url = f"{url}{sep}download=1"
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        data = r.read()
-    if not data.startswith(b"PK"):
-        sys.exit("Le lien n'a pas renvoyé un fichier Excel. Vérifiez que le "
-                 "partage est bien 'Toute personne disposant du lien'.")
-    return data
+    # Pas d'URL dans les messages : les journaux du dépôt public sont visibles.
+    import http.cookiejar
+    notes = []
+    for i, u in enumerate(candidate_urls(url), 1):
+        jar = http.cookiejar.CookieJar()  # SharePoint pose un cookie avant le fichier
+        opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
+        opener.addheaders = [("User-Agent", "Mozilla/5.0"), ("Accept", "*/*")]
+        try:
+            with opener.open(u, timeout=60) as r:
+                data, ctype = r.read(), r.headers.get("Content-Type", "?")
+        except Exception as exc:
+            notes.append(f"méthode {i}: {type(exc).__name__} {getattr(exc, 'code', '')}")
+            continue
+        if data.startswith(b"PK"):
+            print(f"  téléchargé (méthode {i}, {len(data)} octets)")
+            return data
+        title = re.search(rb"<title>(.*?)</title>", data, re.S | re.I)
+        notes.append(f"méthode {i}: {ctype}, {len(data)} octets, page "
+                     f"'{title[1].decode(errors='ignore').strip()[:60] if title else '?'}'")
+    raise RuntimeError("le lien n'a pas renvoyé de fichier Excel ("
+                       + " | ".join(notes) + "). Vérifiez que le partage est "
+                       "'Toute personne disposant du lien'.")
 
 
 # ---------- Lecture des valeurs ----------
