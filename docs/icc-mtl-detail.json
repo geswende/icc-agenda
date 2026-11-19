@@ -1,6 +1,6 @@
 {
  "name": "ICC Montréal (détaillé)",
- "updated": "2026-11-18T18:55:13.252553+00:00",
+ "updated": "2026-11-19T17:57:43.534596+00:00",
  "events": [
   {
    "title": "MLA- Rép., Prière et Comfrat - Salle Zoé",
@@ -9687,6 +9687,18 @@
    "source": "MTL"
   },
   {
+   "title": "BFD - Méga FI - Conquérants - Salle Eden",
+   "date": "2026-11-19",
+   "end_date": "2026-11-19",
+   "start": null,
+   "end": null,
+   "location": "Salle Eden",
+   "description": "",
+   "sheet": "Novembre",
+   "uid": "mtl-detail-56f9746c367ab237@icc-agenda",
+   "source": "MTL"
+  },
+  {
    "title": "EJP - Famille d'impact",
    "date": "2026-11-19",
    "end_date": "2026-11-19",
@@ -9720,6 +9732,18 @@
    "description": "",
    "sheet": "Novembre",
    "uid": "mtl-detail-46b1b9585047fdb7@icc-agenda",
+   "source": "MTL"
+  },
+  {
+   "title": "MiFi - Réunion - Salle Eden",
+   "date": "2026-11-20",
+   "end_date": "2026-11-20",
+   "start": null,
+   "end": null,
+   "location": "Salle Eden",
+   "description": "",
+   "sheet": "Novembre",
+   "uid": "mtl-detail-2f5859126e0ebaa7@icc-agenda",
    "source": "MTL"
   },
   {
