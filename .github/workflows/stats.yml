@@ -1,0 +1,36 @@
+name: Statistiques ICC Longueuil (structure)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [stats]
+    paths: ["scripts/stats_*.py", ".github/workflows/stats.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install openpyxl
+
+      - name: Lire la structure du fichier
+        env:
+          SOURCE_URL_STATS_LGL: ${{ secrets.SOURCE_URL_STATS_LGL }}
+        run: python scripts/stats_inspect.py
+
+      - name: Publier la structure
+        if: always()
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add stats/ || true
+          git diff --cached --quiet || git commit -m "Structure du fichier stats"
+          git push
