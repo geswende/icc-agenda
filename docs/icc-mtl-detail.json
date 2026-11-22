@@ -1,6 +1,6 @@
 {
  "name": "ICC Montréal (détaillé)",
- "updated": "2026-11-21T16:36:28.128991+00:00",
+ "updated": "2026-11-22T16:52:56.639053+00:00",
  "events": [
   {
    "title": "MLA- Rép., Prière et Comfrat - Salle Zoé",
@@ -9951,15 +9951,15 @@
    "source": "MTL"
   },
   {
-   "title": "EJP - Veillée K-smart - Salle Zoé (pas de confirmation)",
+   "title": "EJP - Veillée K-smart - Salle Eden",
    "date": "2026-11-27",
    "end_date": "2026-11-27",
    "start": null,
    "end": null,
-   "location": "Salle Zoé",
+   "location": "Salle Eden",
    "description": "",
    "sheet": "Novembre",
-   "uid": "mtl-detail-464de97119976cb1@icc-agenda",
+   "uid": "mtl-detail-8dfed1520d3d34c1@icc-agenda",
    "source": "MTL"
   },
   {
@@ -10083,15 +10083,15 @@
    "source": "MTL"
   },
   {
-   "title": "La bonne Part - Pst. Célestin - Salle Eden",
+   "title": "La bonne Part - Pst. Célestin - Salle Zoé",
    "date": "2026-12-01",
    "end_date": "2026-12-01",
    "start": null,
    "end": null,
-   "location": "Salle Eden",
+   "location": "Salle Zoé",
    "description": "",
    "sheet": "Décembre",
-   "uid": "mtl-detail-eefb99c30e102b6d@icc-agenda",
+   "uid": "mtl-detail-3d11c84bc176fe28@icc-agenda",
    "source": "MTL"
   },
   {
@@ -10323,15 +10323,15 @@
    "source": "MTL"
   },
   {
-   "title": "La bonne Part - Pst. Célestin - Salle Eden",
+   "title": "La bonne Part - Pst. Célestin - Salle Zoé",
    "date": "2026-12-08",
    "end_date": "2026-12-08",
    "start": null,
    "end": null,
-   "location": "Salle Eden",
+   "location": "Salle Zoé",
    "description": "",
    "sheet": "Décembre",
-   "uid": "mtl-detail-2eaf2d8d40f1fb03@icc-agenda",
+   "uid": "mtl-detail-2eee3b93830fc0f8@icc-agenda",
    "source": "MTL"
   },
   {
@@ -10551,15 +10551,15 @@
    "source": "MTL"
   },
   {
-   "title": "La bonne Part - Pst. Célestin - Salle Eden",
+   "title": "La bonne Part - Pst. Célestin - Salle Zoé",
    "date": "2026-12-15",
    "end_date": "2026-12-15",
    "start": null,
    "end": null,
-   "location": "Salle Eden",
+   "location": "Salle Zoé",
    "description": "",
    "sheet": "Décembre",
-   "uid": "mtl-detail-69ca0962b280ce64@icc-agenda",
+   "uid": "mtl-detail-a703e5d3ca9b75f0@icc-agenda",
    "source": "MTL"
   },
   {
@@ -10767,15 +10767,15 @@
    "source": "MTL"
   },
   {
-   "title": "La bonne Part - Pst. Célestin - Salle Eden",
+   "title": "La bonne Part - Pst. Célestin - Salle Zoé",
    "date": "2026-12-22",
    "end_date": "2026-12-22",
    "start": null,
    "end": null,
-   "location": "Salle Eden",
+   "location": "Salle Zoé",
    "description": "",
    "sheet": "Décembre",
-   "uid": "mtl-detail-f79d9a1f6b900c40@icc-agenda",
+   "uid": "mtl-detail-fb9226290292b620@icc-agenda",
    "source": "MTL"
   },
   {
@@ -10959,15 +10959,15 @@
    "source": "MTL"
   },
   {
-   "title": "La bonne Part - Pst. Célestin - Salle Eden",
+   "title": "La bonne Part - Pst. Célestin - Salle Zoé",
    "date": "2026-12-29",
    "end_date": "2026-12-29",
    "start": null,
    "end": null,
-   "location": "Salle Eden",
+   "location": "Salle Zoé",
    "description": "",
    "sheet": "Décembre",
-   "uid": "mtl-detail-50e44301f1081c09@icc-agenda",
+   "uid": "mtl-detail-0a017fb07ce6fc17@icc-agenda",
    "source": "MTL"
   },
   {
