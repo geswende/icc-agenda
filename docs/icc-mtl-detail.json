@@ -1,6 +1,6 @@
 {
  "name": "ICC Montréal (détaillé)",
- "updated": "2026-11-25T18:58:12.405203+00:00",
+ "updated": "2026-11-26T18:49:40.214819+00:00",
  "events": [
   {
    "title": "MLA- Rép., Prière et Comfrat - Salle Zoé",
@@ -9951,15 +9951,15 @@
    "source": "MTL"
   },
   {
-   "title": "EJP - Veillée K-smart - Salle Eden",
+   "title": "EJP - Veillée K-smart - Salle Zoé",
    "date": "2026-11-27",
    "end_date": "2026-11-27",
    "start": null,
    "end": null,
-   "location": "Salle Eden",
+   "location": "Salle Zoé",
    "description": "",
    "sheet": "Novembre",
-   "uid": "mtl-detail-8dfed1520d3d34c1@icc-agenda",
+   "uid": "mtl-detail-ca0b3db83193ef79@icc-agenda",
    "source": "MTL"
   },
   {
