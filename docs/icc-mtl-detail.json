@@ -1,6 +1,6 @@
 {
  "name": "ICC Montréal (détaillé)",
- "updated": "2026-11-26T18:49:40.214819+00:00",
+ "updated": "2026-11-27T18:40:48.158627+00:00",
  "events": [
   {
    "title": "MLA- Rép., Prière et Comfrat - Salle Zoé",
@@ -10176,6 +10176,18 @@
    "description": "",
    "sheet": "Décembre",
    "uid": "mtl-detail-5ac572c546dd605a@icc-agenda",
+   "source": "MTL"
+  },
+  {
+   "title": "MCIM - Rencontre avec Past. Malu - Salle Eden",
+   "date": "2026-12-04",
+   "end_date": "2026-12-04",
+   "start": null,
+   "end": null,
+   "location": "Salle Eden",
+   "description": "",
+   "sheet": "Décembre",
+   "uid": "mtl-detail-ff0b3c234ebfd3ed@icc-agenda",
    "source": "MTL"
   },
   {
